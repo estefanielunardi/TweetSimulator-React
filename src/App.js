@@ -14,13 +14,22 @@ function App() {
     text: null
   });
 
-  const [ allTweets, setAllTweets ] = useState([]); 
+  const [ allTweets, setAllTweets ] = useState([]);
+  const [reloadTweets, setReloadTweets] = useState(false); 
 
   useEffect(() => {
     const allTweetsStorage = localStorage.getItem(TWEETS_STORAGE);
     const allTweetsArray = JSON.parse(allTweetsStorage);
     setAllTweets(allTweetsArray);
-  }, []);
+    setReloadTweets(false);
+  }, [reloadTweets]);
+
+  const deleteTweets = index => {
+    allTweets.splice(index, 1);
+    setAllTweets(allTweets);
+    localStorage.setItem(TWEETS_STORAGE, JSON.stringify(allTweets));
+    setReloadTweets(true);
+  }
 
   // console.log(allTweets);
 
@@ -29,7 +38,7 @@ function App() {
       <Header />
       <SendTweet />
       <SendTweet setToastProps={setToastProps} allTweets={allTweets}/>
-      <ListTweets allTweets={allTweets}/>
+      <ListTweets allTweets={allTweets} deleteTweets={deleteTweets}/>
       <Snackbar 
         anchorOrigin={{
           vertical:"top",
